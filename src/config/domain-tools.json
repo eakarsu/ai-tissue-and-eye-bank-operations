@@ -1,0 +1,66 @@
+[
+  {
+    "id": "domain-calculation",
+    "title": "Tissue lot downstream trace",
+    "operation": "trace",
+    "example": {
+      "target": "donor-001",
+      "links": [
+        {
+          "from": "donor-001",
+          "to": "lot-A"
+        },
+        {
+          "from": "lot-A",
+          "to": "shipment-1"
+        },
+        {
+          "from": "lot-B",
+          "to": "shipment-2"
+        }
+      ]
+    },
+    "description": "Walk declared donor/lot/distribution relationships to list potentially affected downstream records. No recall notices are sent."
+  },
+  {
+    "id": "evidence-check",
+    "operation": "evidence",
+    "title": "Tissue Bank Program evidence checklist",
+    "description": "Check source presence against an explicitly supplied document list; reviewer assesses adequacy.",
+    "example": {
+      "requirements": [
+        {
+          "id": "source-1",
+          "requirement": "Tissue Donor evidence",
+          "evidence": "Example source reference"
+        },
+        {
+          "id": "source-2",
+          "requirement": "Reviewed rule version",
+          "evidence": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "deadline-check",
+    "operation": "deadlines",
+    "title": "Operational deadline queue",
+    "description": "Compute overdue items from entered dates and completed flags; no external notifications.",
+    "example": {
+      "asOf": "2026-10-20T12:00:00Z",
+      "items": [
+        {
+          "id": "review-1",
+          "dueAt": "2026-10-18T00:00:00Z",
+          "completed": false
+        },
+        {
+          "id": "follow-up-1",
+          "dueAt": "2026-10-23T00:00:00Z",
+          "completed": false
+        }
+      ]
+    }
+  }
+]

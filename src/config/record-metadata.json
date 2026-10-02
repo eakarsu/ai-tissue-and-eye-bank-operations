@@ -1,0 +1,613 @@
+{
+  "TissueBankProgram": {
+    "name": "TissueBankProgram",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "facility",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "registrationNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "coordinator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reportingStart",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reportingEnd",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "TissueDonor": {
+    "name": "TissueDonor",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "donorCode",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "recoveredAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "consentEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "eligibilityEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueRecovery": {
+    "name": "TissueRecovery",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueDonorId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueDonor"
+      },
+      {
+        "name": "tissueType",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "quantity",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "recoveredAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "recoveryTeam",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueLot": {
+    "name": "TissueLot",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueDonorId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueDonor"
+      },
+      {
+        "name": "lotNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueType",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "processedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "storageLocation",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueProcessing": {
+    "name": "TissueProcessing",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueLotId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueLot"
+      },
+      {
+        "name": "processName",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "performedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "operator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueTest": {
+    "name": "TissueTest",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueLotId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueLot"
+      },
+      {
+        "name": "sampledAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "testName",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "resultText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "laboratory",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "QuarantineReview": {
+    "name": "QuarantineReview",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueLotId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueLot"
+      },
+      {
+        "name": "reviewedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reviewer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "disposition",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "rationale",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueDistribution": {
+    "name": "TissueDistribution",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueLotId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueLot"
+      },
+      {
+        "name": "shippedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "recipient",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "quantity",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "TissueAdverseEvent": {
+    "name": "TissueAdverseEvent",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueLotId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueLot"
+      },
+      {
+        "name": "observedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "description",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "investigator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "response",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tissueBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "TissueBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "TissueBankProgram",
+      "field": "tissueBankProgramId"
+    }
+  }
+}

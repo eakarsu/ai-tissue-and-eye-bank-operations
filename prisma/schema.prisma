@@ -1,0 +1,367 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model TissueBankProgram {
+ id String @id @default(cuid())
+ name String
+ facility String
+ registrationNumber String
+ coordinator String
+ reportingStart DateTime
+ reportingEnd DateTime
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseTissueDonor_tissueBankProgramId TissueDonor[] @relation("TissueDonor_tissueBankProgramId")
+ inverseTissueRecovery_tissueBankProgramId TissueRecovery[] @relation("TissueRecovery_tissueBankProgramId")
+ inverseTissueLot_tissueBankProgramId TissueLot[] @relation("TissueLot_tissueBankProgramId")
+ inverseTissueProcessing_tissueBankProgramId TissueProcessing[] @relation("TissueProcessing_tissueBankProgramId")
+ inverseTissueTest_tissueBankProgramId TissueTest[] @relation("TissueTest_tissueBankProgramId")
+ inverseQuarantineReview_tissueBankProgramId QuarantineReview[] @relation("QuarantineReview_tissueBankProgramId")
+ inverseTissueDistribution_tissueBankProgramId TissueDistribution[] @relation("TissueDistribution_tissueBankProgramId")
+ inverseTissueAdverseEvent_tissueBankProgramId TissueAdverseEvent[] @relation("TissueAdverseEvent_tissueBankProgramId")
+ inverseOperationalTask_tissueBankProgramId OperationalTask[] @relation("OperationalTask_tissueBankProgramId")
+ inverseRuleVersion_tissueBankProgramId RuleVersion[] @relation("RuleVersion_tissueBankProgramId")
+ inverseDocumentRequirement_tissueBankProgramId DocumentRequirement[] @relation("DocumentRequirement_tissueBankProgramId")
+}
+
+model TissueDonor {
+ id String @id @default(cuid())
+ name String
+ donorCode String
+ recoveredAt DateTime
+ consentEvidence String
+ eligibilityEvidence String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueDonor_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+ inverseTissueRecovery_tissueDonorId TissueRecovery[] @relation("TissueRecovery_tissueDonorId")
+ inverseTissueLot_tissueDonorId TissueLot[] @relation("TissueLot_tissueDonorId")
+}
+
+model TissueRecovery {
+ id String @id @default(cuid())
+ title String
+ tissueDonorId String
+ tissueType String
+ quantity Int
+ recoveredAt DateTime
+ recoveryTeam String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueDonorId TissueDonor @relation("TissueRecovery_tissueDonorId", fields: [tissueDonorId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueRecovery_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model TissueLot {
+ id String @id @default(cuid())
+ title String
+ tissueDonorId String
+ lotNumber String
+ tissueType String
+ processedAt DateTime
+ storageLocation String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueDonorId TissueDonor @relation("TissueLot_tissueDonorId", fields: [tissueDonorId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueLot_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+ inverseTissueProcessing_tissueLotId TissueProcessing[] @relation("TissueProcessing_tissueLotId")
+ inverseTissueTest_tissueLotId TissueTest[] @relation("TissueTest_tissueLotId")
+ inverseQuarantineReview_tissueLotId QuarantineReview[] @relation("QuarantineReview_tissueLotId")
+ inverseTissueDistribution_tissueLotId TissueDistribution[] @relation("TissueDistribution_tissueLotId")
+ inverseTissueAdverseEvent_tissueLotId TissueAdverseEvent[] @relation("TissueAdverseEvent_tissueLotId")
+}
+
+model TissueProcessing {
+ id String @id @default(cuid())
+ title String
+ tissueLotId String
+ processName String
+ performedAt DateTime
+ operator String
+ evidence String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueLotId TissueLot @relation("TissueProcessing_tissueLotId", fields: [tissueLotId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueProcessing_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model TissueTest {
+ id String @id @default(cuid())
+ title String
+ tissueLotId String
+ sampledAt DateTime
+ testName String
+ resultText String
+ laboratory String
+ evidence String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueLotId TissueLot @relation("TissueTest_tissueLotId", fields: [tissueLotId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueTest_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model QuarantineReview {
+ id String @id @default(cuid())
+ title String
+ tissueLotId String
+ reviewedAt DateTime
+ reviewer String
+ disposition String
+ rationale String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueLotId TissueLot @relation("QuarantineReview_tissueLotId", fields: [tissueLotId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("QuarantineReview_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model TissueDistribution {
+ id String @id @default(cuid())
+ title String
+ tissueLotId String
+ shippedAt DateTime
+ recipient String
+ quantity Int
+ receipt String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueLotId TissueLot @relation("TissueDistribution_tissueLotId", fields: [tissueLotId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueDistribution_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model TissueAdverseEvent {
+ id String @id @default(cuid())
+ title String
+ tissueLotId String
+ observedAt DateTime
+ description String
+ investigator String
+ response String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueLotId TissueLot @relation("TissueAdverseEvent_tissueLotId", fields: [tissueLotId], references: [id], onDelete: Restrict)
+ linkedTissueBankProgramId TissueBankProgram @relation("TissueAdverseEvent_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueBankProgramId TissueBankProgram @relation("OperationalTask_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueBankProgramId TissueBankProgram @relation("RuleVersion_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ tissueBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tissueBankProgramId])
+ linkedTissueBankProgramId TissueBankProgram @relation("DocumentRequirement_tissueBankProgramId", fields: [tissueBankProgramId], references: [id], onDelete: Restrict)
+}
